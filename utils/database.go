@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"log"
+	pkg "skipthequeue/pkg/models"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -30,4 +31,8 @@ func ConnectToMysqlDB(mysqlConfig MysqlConfig) error {
 	}
 
 	return err
+}
+
+func AutoMigrate() {
+	DB.AutoMigrate(&pkg.Outlet{})
 }
