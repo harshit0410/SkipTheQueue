@@ -1,0 +1,1 @@
+Binding = https://blog.logrocket.com/gin-binding-in-go-a-tutorial-with-examples/
