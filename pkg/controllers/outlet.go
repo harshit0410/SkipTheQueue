@@ -1,9 +1,10 @@
-package pkg
+package controllers
 
 import (
 	"errors"
 	"net/http"
-	pkg "skipthequeue/pkg/models"
+
+	"skipthequeue/pkg/models"
 	"skipthequeue/utils"
 
 	"github.com/gin-gonic/gin"
@@ -31,7 +32,7 @@ func CreateOutlet(c *gin.Context) {
 		return
 	}
 
-	outlet := pkg.Outlet{Name: input.Name, Address: input.Address, City: input.City, PinCode: input.PinCode}
+	outlet := models.Outlet{Name: input.Name, Address: input.Address, City: input.City, PinCode: input.PinCode}
 	result := utils.DB.Create(&outlet)
 	if result.Error != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": result.Error})
@@ -42,7 +43,7 @@ func CreateOutlet(c *gin.Context) {
 }
 
 func FindAllOutlet(c *gin.Context) {
-	var outlets []pkg.Outlet
+	var outlets []models.Outlet
 
 	result := utils.DB.Find(&outlets)
 	if result.Error != nil {
@@ -54,7 +55,7 @@ func FindAllOutlet(c *gin.Context) {
 }
 
 func FindOutletById(c *gin.Context) {
-	var outlet pkg.Outlet
+	var outlet models.Outlet
 
 	id := c.Param("id")
 
@@ -68,7 +69,7 @@ func FindOutletById(c *gin.Context) {
 }
 
 func UpdateOutlet(c *gin.Context) {
-	var outlet pkg.Outlet
+	var outlet models.Outlet
 	id := c.Param("id")
 
 	result := utils.DB.First(&outlet, id)
@@ -95,7 +96,7 @@ func UpdateOutlet(c *gin.Context) {
 }
 
 func DeleteOutlet(c *gin.Context) {
-	var outlet pkg.Outlet
+	var outlet models.Outlet
 
 	id := c.Param("id")
 	result := utils.DB.First(&outlet, id)

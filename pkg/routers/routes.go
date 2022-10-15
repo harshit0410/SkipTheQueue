@@ -1,17 +1,17 @@
-package pkg
+package routes
 
 import (
-	pkg "skipthequeue/pkg/controllers"
+	"skipthequeue/pkg/controllers"
 
 	"github.com/gin-gonic/gin"
 )
 
 func InitRoutes(router *gin.Engine) {
-	router.GET("/ping", pkg.Ping)
+	router.GET("/ping", controllers.Ping)
 
-	router.GET("/outlets", pkg.FindAllOutlet)
-	router.POST("/outlets", pkg.CreateOutlet)
-	router.GET("/outlets/:id", pkg.FindOutletById)
-	router.PATCH("/outlets/:id", pkg.UpdateOutlet)
-	router.DELETE("/outlets/:id", pkg.DeleteOutlet)
+	router.GET("/outlets", controllers.FindAllOutlet)
+	router.POST("/outlets", controllers.CreateOutlet)
+	router.GET("/outlets/:id", controllers.FindOutletById)
+	router.PATCH("/outlets/:id", controllers.UpdateOutlet)
+	router.DELETE("/outlets/:id", controllers.DeleteOutlet)
 }

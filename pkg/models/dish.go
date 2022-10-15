@@ -1,4 +1,4 @@
-package pkg
+package models
 
 import "time"
 
@@ -8,7 +8,7 @@ type Dish struct {
 	Description  string
 	Type         string
 	Availability bool
-	Outlet       uint
+	Outlet       uint      `gorm:"index"`
 	CreatedAt    time.Time `gorm:"autoCreateTime"`
 	UpdatedAt    time.Time `gorm:"autoUpdateTime"`
 }

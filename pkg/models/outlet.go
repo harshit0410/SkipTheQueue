@@ -1,4 +1,4 @@
-package pkg
+package models
 
 import "time"
 
@@ -8,6 +8,7 @@ type Outlet struct {
 	Address   string
 	PinCode   string
 	City      string
+	Status    string
 	CreatedAt time.Time `gorm:"autoCreateTime"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
