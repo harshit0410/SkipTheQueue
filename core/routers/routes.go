@@ -1,7 +1,7 @@
-package routes
+package routers
 
 import (
-	"skipthequeue/pkg/controllers"
+	"skipthequeue/core/controllers"
 
 	"github.com/gin-gonic/gin"
 )

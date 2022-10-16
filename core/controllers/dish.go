@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"skipthequeue/pkg/models"
-	"skipthequeue/pkg/services"
+	"skipthequeue/core/models"
+	"skipthequeue/core/services"
 	"skipthequeue/utils"
 
 	"github.com/gin-gonic/gin"

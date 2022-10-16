@@ -2,7 +2,7 @@ package services
 
 import (
 	"errors"
-	"skipthequeue/pkg/models"
+	"skipthequeue/core/models"
 
 	"skipthequeue/utils"
 

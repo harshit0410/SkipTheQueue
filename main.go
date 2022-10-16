@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	pkg "skipthequeue/pkg/routers"
+	"skipthequeue/core/routers"
 	"skipthequeue/utils"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +28,7 @@ func main() {
 	// utils.AutoMigrate()
 
 	router := gin.Default()
-	pkg.InitRoutes(router)
+	routers.InitRoutes(router)
 
 	server := &http.Server{
 		Addr:    ":8080",
