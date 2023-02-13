@@ -35,4 +35,7 @@ func ConnectToMysqlDB(mysqlConfig MysqlConfig) error {
 
 func AutoMigrate() {
 	DB.AutoMigrate(&models.Outlet{})
+	DB.AutoMigrate(&models.Dish{})
+	DB.AutoMigrate(&models.Order{})
+	DB.AutoMigrate(&models.OrderDetails{})
 }

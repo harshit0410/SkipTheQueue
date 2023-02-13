@@ -1,1 +1,3 @@
 Binding = https://blog.logrocket.com/gin-binding-in-go-a-tutorial-with-examples/
+
+DB - https://vertabelo.com/blog/a-restaurant-delivery-data-model/

@@ -1,11 +1,14 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 	"skipthequeue/core/models"
+	"skipthequeue/core/services"
 	"skipthequeue/utils"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type CreateOrderDetailInput struct {
@@ -67,9 +70,9 @@ func CreateOrder(c *gin.Context) {
 	order := models.Order{
 		OutletId: orderInput.OutletId,
 		Status:   "ordered",
-		Type:     "takwAway",
+		Type:     "takeAway",
 	}
-	err = utils.DB.Create(order).Error
+	err = utils.DB.Create(&order).Error
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err})
 		return
@@ -81,16 +84,59 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	err = utils.DB.Create(orderDetails).Error
+	err = utils.DB.Create(&orderDetails).Error
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
 	order.FinalAmount = finalAmount
-	err = utils.DB.Save(order).Error
+	err = utils.DB.Save(&order).Error
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": order})
+}
+
+type UpdateOrderStatusInput struct {
+	Status string `json:"status" binding:"required"`
+}
+
+func UpdateOrderStatus(c *gin.Context) {
+	var updateOrderStatusInput models.Order
+	orderId := c.Param("orderId")
+
+	order, err := services.FindOrderByIdService(orderId)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+
+	if err := c.ShouldBindJSON(&updateOrderStatusInput); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updatedResult := utils.DB.Model(&order).Updates(updateOrderStatusInput)
+
+	if updatedResult.Error != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": updatedResult.Error})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": order})
+}
+
+func FindOrderById(c *gin.Context) {
+	var order models.Order
+
+	id := c.Param("id")
+
+	result := utils.DB.First(&order, id)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) || result.RowsAffected == 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Recond not found"})
 		return
 	}
 

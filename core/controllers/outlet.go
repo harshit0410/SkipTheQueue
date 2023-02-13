@@ -8,6 +8,7 @@ import (
 	"skipthequeue/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/imdario/mergo"
 	"gorm.io/gorm"
 )
 
@@ -78,14 +79,19 @@ func UpdateOutlet(c *gin.Context) {
 		return
 	}
 
-	var updatedOutletInput UpdateOutletInput
+	var updatedOutletInput models.Outlet
 
 	if err := c.ShouldBindJSON(&updatedOutletInput); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	updatedResult := utils.DB.Model(&outlet).Updates(updatedOutletInput)
+	if err := mergo.Merge(&outlet, updatedOutletInput, mergo.WithOverride); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updatedResult := utils.DB.Model(&outlet).Updates(outlet)
 
 	if updatedResult.Error != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": updatedResult.Error})

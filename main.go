@@ -19,13 +19,13 @@ func main() {
 		panic(err.Error())
 	}
 
-	// initMysqlDB()
-	// sqlDB, err := utils.DB.DB()
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
-	// defer sqlDB.Close()
-	// utils.AutoMigrate()
+	initMysqlDB()
+	sqlDB, err := utils.DB.DB()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer sqlDB.Close()
+	utils.AutoMigrate()
 
 	router := gin.Default()
 	routers.InitRoutes(router)

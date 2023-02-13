@@ -17,6 +17,7 @@ type CreateDishInput struct {
 	Description  string `json:"description" binding:"required"`
 	Type         string `json:"type" binding:"required"`
 	Availability bool   `json:"availability" binding:"required"`
+	Price        int    `json:"price" binding:"required"`
 	Outlet       int    `json:"outlet" binding:"required"`
 }
 
@@ -24,6 +25,7 @@ type UpdateDishInput struct {
 	Name         string `json:"name"`
 	Description  string `json:"description"`
 	Type         string `json:"type"`
+	Price        int    `json:"price" binding:"required"`
 	Availability bool   `json:"availability"`
 }
 
@@ -34,7 +36,7 @@ func CreateDish(c *gin.Context) {
 		return
 	}
 
-	dish := models.Dish{Name: input.Name, Description: input.Description, Type: input.Type, Availability: input.Availability, Outlet: uint(input.Outlet)}
+	dish := models.Dish{Name: input.Name, Description: input.Description, Type: input.Type, Availability: input.Availability, Price: float32(input.Price), Outlet: uint(input.Outlet)}
 	result := utils.DB.Create(&dish)
 	if result.Error != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": result.Error})
@@ -90,19 +92,19 @@ func UpdateDish(c *gin.Context) {
 	outletId := c.Param("ouletId")
 	dishId := c.Param("dishId")
 
-	_, err := services.FindOutletByIdService(outletId)
+	outlet, err := services.FindOutletByIdService(outletId)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
-	result := utils.DB.Where("outlet = ?", outletId).First(&dish, dishId)
+	result := utils.DB.Where("outlet = ?", outlet.ID).First(&dish, dishId)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) || result.RowsAffected == 0 {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Recond not found"})
 		return
 	}
 
-	var updatedDishInput UpdateDishInput
+	var updatedDishInput models.Dish
 
 	if err := c.ShouldBindJSON(&updatedDishInput); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -123,21 +125,21 @@ func DeleteDish(c *gin.Context) {
 	var dish models.Dish
 
 	outletId := c.Param("outletId")
-	dishId := c.Param("DishId")
+	dishId := c.Param("dishId")
 
-	_, err := services.FindOutletByIdService(outletId)
+	outlet, err := services.FindOutletByIdService(outletId)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
-	result := utils.DB.Where("outlet = ?", outletId).First(&dish, dishId)
+	result := utils.DB.Where("outlet = ?", outlet.ID).First(&dish, dishId)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) || result.RowsAffected == 0 {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Recond not found"})
 		return
 	}
 
-	deletedResult := utils.DB.Delete(&dish, dishId)
+	deletedResult := utils.DB.Delete(&models.Dish{}, dish.Id)
 
 	if deletedResult.Error != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": deletedResult.Error})
